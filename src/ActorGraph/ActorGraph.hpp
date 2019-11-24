@@ -50,7 +50,7 @@ class ActorGraph {
      * return true if file was loaded sucessfully, false otherwise
      */
     bool loadFromFile(const char* in_filename, bool use_weighted_edges);
-    
+    unordered_map<string, Actor*> getactMap() { return actMap;}; 
 };
 
 #endif  // ACTORGRAPH_HPP
