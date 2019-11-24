@@ -1,18 +1,22 @@
 /*
  * ActorGraph.cpp
- * Author: <YOUR NAME HERE>
- * Date:   <DATE HERE>
+ * Author: Rosa Miranda
+ * Date:   November 17th, 2019
  *
  * This file is meant to exist as a container for starter code that you can use to read the input file format
  * defined in imdb_2019.tsv. Feel free to modify any/all aspects as you wish.
  */
 
 #include "ActorGraph.hpp"
+#include "Actor.hpp"
+#include "Movie.hpp"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -72,6 +76,43 @@ bool ActorGraph::loadFromFile(const char* in_filename, bool use_weighted_edges) 
         int year = stoi(record[2]);
         
         // TODO: we have an actor/movie relationship, now what?
+	unordered_map<string, Actor*>::const_iterator actNode = actMap.find(actor);
+	unordered_map<string, Movie*>::const_iterator movNode = movMap.find(movie_title+to_string(year));
+
+	Actor* theActor;
+	Movie* theMovie;
+	bool here = false;
+
+	if(movNode == movMap.end()){
+		Movie* newMovie = new Movie(movie_title, year);
+		theMovie = newMovie;
+		movMap.insert(make_pair(movie_title + to_string(year), newMovie));
+	}else{
+		theMovie = (*movNode).second;
+		if(theMovie->year != year){
+			Movie* newMovie = new Movie(movie_title, year);
+			theMovie = newMovie;
+			movMap.insert(make_pair(movie_title + to_string(year), newMovie));
+		}
+	}
+	if(actNode == actMap.end()){
+		Actor* newActor = new Actor(actor);
+		theActor = newActor;
+		actMap.insert(make_pair(actor, newActor));
+	}else{
+		theActor = (*actNode).second;
+	}
+	for(unsigned int i = 0; i < theActor->movies.size(); i++){
+		if( movie_title == theActor->movies[i]->movTit ){
+			if(year == theActor->movies[i]->year){
+				here = true;
+				break;
+			}
+		}
+	}
+	if(!here){
+		theActor->movies.push_back(theMovie);
+	}
     }
     if (!infile.eof()) {
         cerr << "Failed to read " << in_filename << "!\n";
@@ -79,5 +120,9 @@ bool ActorGraph::loadFromFile(const char* in_filename, bool use_weighted_edges) 
     }
     infile.close();
 
+    cout << "Actors: " << actMap.size() << " Movies: " <<movMap.size() << endl;
+
     return true;
+
+
 }

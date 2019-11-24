@@ -11,17 +11,25 @@
 #define ACTORGRAPH_HPP
 
 #include <iostream>
-
+#include <unordered_map>
+#include "Actor.hpp"
+#include "Movie.hpp"
 // Maybe include some data structures here
 
 using namespace std;
 
-/**
- * TODO: add class header
+/* * TODO: add class header
  */
+struct valComp{
+	bool operator()(Actor* a1, Actor* a2) const{
+		return a1->dist < a2->dist;
+	}
+};
 class ActorGraph {
   protected:
     // Maybe add class data structure(s) here
+    unordered_map<string, Actor*> actMap;
+    unordered_map<string, Movie*> movMap;
 
   public:
     /**
