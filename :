@@ -32,28 +32,21 @@ void unweightedPath(string inFile, string outFile, ActorGraph* graph){
 	out.open(outFile, ios::trunc);
    }
 
-   out << "(Actor)--[movie#@year]-->(actor)--..." << endl;
+   out << "(Actor)--[movie#@year]-->(actor)...." << endl;
+// priority_queue<Actor*, vector<Actor*>, valComp> path;
    string firstActor;
    string secondActor;
-   string total;
    getline(in, firstActor);
    while(in.peek() != ifstream::traits_type::eof()){
-
 	getline(in, firstActor, '\t');
 	getline(in, secondActor, '\n');
-
-	cout << "Computing path for (" << firstActor << ") -> (" << secondActor << ")" << endl;
-
+	cout << firstActor << "    " << secondActor << endl;
 	unordered_map<string, Actor*>::const_iterator actStart = ((graph->getactMap()).find(firstActor));
 	unordered_map<string, Actor*>::const_iterator actEnd = ((graph->getactMap()).find(secondActor));
-        total = "";
-	if(actStart == (graph->getactMap()).end()){
-		cout << "Failed to locate node '" << firstActor << "'" << endl;
-		out << endl;
-        }else if(actEnd == (graph->getactMap()).end()){
-		cout << "Failed to locate node '" << secondActor << "'" << endl;
-		out << endl;
+	if(actStart == (graph->getactMap()).end() || actEnd == (graph->getactMap()).end() ){
+		cout << "not here" << endl;
 	}else{
+		cout << "why" << endl;
 		Actor* firstAct = (*((graph->getactMap()).find(firstActor))).second;
 		Actor* secondAct = (*((graph->getactMap()).find(secondActor))).second;
 		firstAct = graph->pathHelper(firstAct, secondActor);
@@ -61,16 +54,15 @@ void unweightedPath(string inFile, string outFile, ActorGraph* graph){
 		if(firstAct->prev){
 			prevMov = firstAct->prev;
 		}
-		out << "(" << firstActor << ")" ;
 		while(firstAct->actName != firstActor && firstAct->prev){
-			total = "--["+prevMov->movTit+"#@"+ to_string(prevMov->year) +"]-->("+firstAct->actName+")" + total;
+			cout << firstAct
 			firstAct = prevMov->prev;
 			if(firstAct->prev){
 				prevMov = firstAct->prev;
 			}
 		}
-		out << total << endl;
-	}
+		out << endl;
+		}
 	//Resets the graph for the next set of actor
 /*	for(auto it = (graph->getactMap()).begin(); it != (graph->getactMap()).end(); it++){
 		Actor* actCurr = (*it).second;
@@ -96,10 +88,9 @@ int main(int argc, char* arg[]){
   }
 
   ActorGraph* graph = new ActorGraph();
-  cout << "Reading " << arg[3] << " ..." << endl; 
+   
   if(strcmp(arg[2], "u") == 0){
   	graph->loadFromFile(arg[1], arg[2]);
-	cout << "done" << endl;
 	unweightedPath(arg[3], arg[4], graph);
   }
   delete graph;

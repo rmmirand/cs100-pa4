@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <iostream>
-
+#include <climits>
 #include "ActorGraph.hpp"
 #include "Movie.hpp"
 using namespace std;
@@ -18,7 +18,7 @@ class Actor {
 		bool visited;
 		int dist;
 		
-	Actor(string actName,  Movie* prev = 0, bool visited = false, int dist = 0) : actName(actName), prev(prev), visited(visited), dist(dist) {
+	Actor(string actName,  Movie* prev = 0, bool visited = false, int dist = INT_MAX) : actName(actName), prev(prev), visited(visited), dist(dist) {
 	}
 };
 

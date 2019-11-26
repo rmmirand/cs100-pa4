@@ -103,7 +103,6 @@ bool ActorGraph::loadFromFile(const char* in_filename, bool use_weighted_edges) 
 	}else{
 		theActor = (*actNode).second;
 	}
-
 	for(unsigned int i = 0; i < theMovie->actList.size(); i++){
 		if( actor == theMovie->actList[i]->actName){
 			here = true;
@@ -132,14 +131,12 @@ bool ActorGraph::loadFromFile(const char* in_filename, bool use_weighted_edges) 
     }
     infile.close();
 
-    cout << "Actors: " << actMap.size() << " Movies: " <<movMap.size() << endl;
-
     return true;
 
 }
 Actor* ActorGraph::pathHelper(Actor* currA, string target){
 	Movie* currM;
-	int d;
+	int d = 0;
 	int tempd;
 	priority_queue<Actor*, vector<Actor*>, valComp> pq;
 	currA->dist = 0;
@@ -147,30 +144,32 @@ Actor* ActorGraph::pathHelper(Actor* currA, string target){
 	while(!pq.empty()){
 		d = (pq.top())->dist;
 		currA = pq.top();
-		cout << currA->actName << endl;;
-		if(currA->actName == target){
-			return currA;
-		}
 		pq.pop();
 		if(!currA->visited){
-			cout << "has been visited" << endl;
 			currA->visited = true;
 			for(unsigned int i = 0; i < currA->movies.size(); i++){
-				cout << "has movies: " << i << endl;
 				currM = currA->movies[i];
-				currM->prev = currA;
 				for(unsigned int j = 0; j < currM->actList.size(); j++){
-					tempd = d + 1;
-					if(tempd < currM->actList[j]->dist){
-						cout << "less distance " << endl;
-						currM->actList[j]->prev = currM;
-						currM->actList[j]->dist = tempd;
-						pq.push(currM->actList[j]);
+					if(!currM->actList[j]->visited){
+						tempd = d + 1;
+						if(tempd < currM->actList[j]->dist){
+							currM->actList[j]->prev = currM;
+							currM->actList[j]->dist = tempd;
+							pq.push(currM->actList[j]);
+							if(currA->prev != currM){
+								currM->prev = currA;
+							}
+						}
 					}			
 				}
 			}
 		}
 	}
+	currA = (*(actMap.find(target))).second;
 	return currA;
 
+}
+ActorGraph::~ActorGraph(){
+	actMap.erase(actMap.begin(), actMap.end());
+	movMap.erase(movMap.begin(), movMap.end());
 }
