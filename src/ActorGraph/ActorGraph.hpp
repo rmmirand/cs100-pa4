@@ -22,7 +22,7 @@ using namespace std;
  */
 struct valComp{
 	bool operator()(Actor* a1, Actor* a2) const{
-		return a1->dist < a2->dist;
+		return a1->dist > a2->dist;
 	}
 };
 class ActorGraph {

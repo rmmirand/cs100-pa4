@@ -72,6 +72,13 @@ void unweightedPath(string inFile, string outFile, ActorGraph* graph){
 		out << total << endl;
 	}
 	//Resets the graph for the next set of actor
+	unordered_map<string, Actor*>::iterator reset = ((graph->getactMap()).begin());
+	actEnd = ((graph->getactMap()).end());
+	for(auto reset: (graph->getactMap())){
+		((reset).second)->dist = INT_MAX;
+		((reset).second)->prev = 0;
+		((reset).second)->visited = false;
+	}
 /*	for(auto it = (graph->getactMap()).begin(); it != (graph->getactMap()).end(); it++){
 		Actor* actCurr = (*it).second;
 		actCurr->dist = INT_MAX;

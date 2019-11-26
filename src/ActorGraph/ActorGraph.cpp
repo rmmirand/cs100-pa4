@@ -149,6 +149,9 @@ Actor* ActorGraph::pathHelper(Actor* currA, string target){
 			currA->visited = true;
 			for(unsigned int i = 0; i < currA->movies.size(); i++){
 				currM = currA->movies[i];
+				if(currA->prev != currM){
+					currM->prev = currA;
+				}
 				for(unsigned int j = 0; j < currM->actList.size(); j++){
 					if(!currM->actList[j]->visited){
 						tempd = d + 1;
@@ -156,8 +159,8 @@ Actor* ActorGraph::pathHelper(Actor* currA, string target){
 							currM->actList[j]->prev = currM;
 							currM->actList[j]->dist = tempd;
 							pq.push(currM->actList[j]);
-							if(currA->prev != currM){
-								currM->prev = currA;
+							if(currM->actList[j]->actName == target){
+								return currM->actList[j];
 							}
 						}
 					}			
