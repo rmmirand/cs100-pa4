@@ -32,25 +32,46 @@ void unweightedPath(string inFile, string outFile, ActorGraph* graph){
 	out.open(outFile, ios::trunc);
    }
 
-   priority_queue<Actor*, vector<Actor*>, valComp> path;
+   out << "(Actor)--[movie#@year]-->(actor)...." << endl;
+// priority_queue<Actor*, vector<Actor*>, valComp> path;
    string firstActor;
    string secondActor;
    getline(in, firstActor);
    while(in.peek() != ifstream::traits_type::eof()){
 	getline(in, firstActor, '\t');
 	getline(in, secondActor, '\n');
-	//path helper;
-	
+	Actor* actStart = (*((graph->getactMap()).find(firstActor))).second;
+        out << actStart->actName << endl;
+	actStart = graph->pathHelper(actStart, secondActor);
+	while(actStart->actName != firstActor){
+		out << actStart->prev;
+	}
+	out << endl;
 	//Resets the graph for the next set of actor
-	for(auto it = (graph->getactMap()).begin(); it != (graph->getactMap()).end(); it++){
+/*	for(auto it = (graph->getactMap()).begin(); it != (graph->getactMap()).end(); it++){
 		Actor* actCurr = (*it).second;
 		actCurr->dist = INT_MAX;
 		actCurr->prev = nullptr;
 		actCurr->visited = false;
 	}
+	for(auto it = (graph->getmovMap()).begin(); it != (graph->getmovMap()).end(); it++){
+		Movie* movCurr = (*it).second;
+		movCurr->prev = nullptr;
+
+	}*/
    }   
    in.close();
    out.close();
+}
+void pathHelper(Actor* curr){	
+   int step = 0;
+   priority_queue<Actor*, vector<Actor*>, valComp> path;
+   path.push(curr);
+//   while(!path.empty()){
+
+
+  // }
+   
 }
 int main(int argc, char* arg[]){
 
@@ -60,7 +81,7 @@ int main(int argc, char* arg[]){
   }
 
   ActorGraph* graph = new ActorGraph();
-  
+   
   if(strcmp(arg[2], "u") == 0){
   	graph->loadFromFile(arg[1], arg[2]);
 	unweightedPath(arg[3], arg[4], graph);

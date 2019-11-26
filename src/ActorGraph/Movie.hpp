@@ -14,9 +14,10 @@ using namespace std;
 class Movie {
 	public:
 		string movTit;
+		Actor* prev;
 		int year;
 		vector<Actor*> actList;
-	Movie(string movTit,int year) : movTit(movTit), year(year) {}
+	Movie(string movTit,int year, Actor* prev = 0) : movTit(movTit), year(year), prev(prev) {}
 
 };
 #endif //MOVIE_HPP

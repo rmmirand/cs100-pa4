@@ -51,6 +51,8 @@ class ActorGraph {
      */
     bool loadFromFile(const char* in_filename, bool use_weighted_edges);
     unordered_map<string, Actor*> getactMap() { return actMap;}; 
+    unordered_map<string, Movie*> getmovMap() { return movMap;};
+    Actor* pathHelper(Actor* currA, string target);
 };
 
 #endif  // ACTORGRAPH_HPP
