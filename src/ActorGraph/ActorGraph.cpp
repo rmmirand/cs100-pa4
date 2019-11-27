@@ -191,9 +191,11 @@ vector<Actor*> ActorGraph::linkCollab(Actor* actor){
 	for(unsigned int i = 0; i < collabs.size(); i++){
 		for(unsigned int j = 0; j < collabs[i]->movies.size() ; j++){
 			for(unsigned int k = 0; k < collabs[i]->movies[j]->actList.size(); k++){
-				for(unsigned int l = 0; l < collabs.size(); l++){
-					if(collabs[l]->actName != collabs[i]->actName){
-						collabs[i]->triangles = collabs[i]->triangles + 1;;
+				if(collabs[i]->movies[j]->actList[k]->actName != actor->actName){
+					for(unsigned int l = 0; l < collabs.size(); l++){
+						if(collabs[l]->actName != collabs[i]->actName && collabs[i]->movies[j]->actList[k]->actName  == collabs[l]->actName){
+							collabs[i]->triangles = collabs[i]->triangles + 1;;
+						}
 					}
 				}
 			}

@@ -54,20 +54,18 @@ void findLinks(string inFile, string out1File, string out2File, ActorGraph* grap
 		collab << endl;
         }	
 	listCollabs = graph->linkCollab(theActor);
-
-	for(unsigned int i = 0; i < listCollabs.size(); i++){
+	collab << listCollabs[0]->actName;
+	for(unsigned int i = 1; i < listCollabs.size(); i++){
 		if(i == 4){
 			break;
 		}
-		collab << listCollabs[i]->actName << '\t';
+		collab << '\t' <<  listCollabs[i]->actName;
 	}
 	collab << endl;
 	//Resets the graph for the next set of actor
-	unordered_map<string, Actor*>::iterator reset = ((graph->getactMap()).begin());
-	for(auto reset: (graph->getactMap())){
-		((reset).second)->dist = INT_MAX;
-		((reset).second)->prev = 0;
-		((reset).second)->visited = false;
+	for(unsigned int i = 0; i < listCollabs.size(); i++){
+		listCollabs[i]->visited = false;
+		listCollabs[i]->triangles = 0;
 	}
    }
       
