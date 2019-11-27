@@ -14,66 +14,56 @@
 #define ARGS_VAL 5
 using namespace std;
 
-void unweightedPath(string inFile, string outFile, ActorGraph* graph){
+void findLinks(string inFile, string out1File, string out2File, ActorGraph* graph){
    ifstream in;
-   ofstream out;
+   ofstream collab;
+   ofstream uncollab;
 
    in.open(inFile, ios::binary);
-   out.open(outFile, ios::trunc);
-   
+   collab.open(out1File, ios::trunc);
+   uncollab.open(out2File, ios::trunc);
    //checks if infile is empty;
    if(in.peek() == ifstream::traits_type::eof()) {
 	cout << "Empty Input File" << endl;
    }
-   //checks if outfile exists, if not creates one
-   if(!out.good()){
-	fstream file(outFile, ios::out);
-	out.close();
-	out.open(outFile, ios::trunc);
+   //checks that both out files exist, if not creates missing ones
+   if(!collab.good()){
+	fstream file(out1File, ios::out);
+	collab.close();
+	collab.open(out1File, ios::trunc);
+   }
+   if(!uncollab.good()){
+	fstream file(out2File, ios::out);
+	uncollab.close();
+	uncollab.open(out2File, ios::trunc);
    }
 
-   out << "(Actor)--[movie#@year]-->(actor)--..." << endl;
-   string firstActor;
-   string secondActor;
-   string total;
-   getline(in, firstActor);
+   collab << "Actor1,Actor2,Actor3,Actor4" << endl;
+   vector<Actor*> listCollabs;
+   string queryAct;
+   getline(in, queryAct);
+   Actor* theActor;
    while(in.peek() != ifstream::traits_type::eof()){
+	getline(in, queryAct);
+	cout << queryAct;
+	unordered_map<string, Actor*>::const_iterator queryPoint = (graph->getactMap()).find(queryAct);
+	theActor = (*queryPoint).second;
+	cout << "Computing predictions for (" << queryAct << ")" << endl;
+	if(queryPoint == (graph->getactMap()).end()){
+		cout << "Failed to locate node '" << queryAct << "'" << endl;
+		collab << endl;
+        }	
+	listCollabs = graph->linkCollab(theActor);
 
-	getline(in, firstActor, '\t');
-	getline(in, secondActor, '\n');
-
-	cout << "Computing path for (" << firstActor << ") -> (" << secondActor << ")" << endl;
-
-	unordered_map<string, Actor*>::const_iterator actStart = ((graph->getactMap()).find(firstActor));
-	unordered_map<string, Actor*>::const_iterator actEnd = ((graph->getactMap()).find(secondActor));
-        total = "";
-	if(actStart == (graph->getactMap()).end()){
-		cout << "Failed to locate node '" << firstActor << "'" << endl;
-		out << endl;
-        }else if(actEnd == (graph->getactMap()).end()){
-		cout << "Failed to locate node '" << secondActor << "'" << endl;
-		out << endl;
-	}else{
-		Actor* firstAct = (*((graph->getactMap()).find(firstActor))).second;
-		Actor* secondAct = (*((graph->getactMap()).find(secondActor))).second;
-		firstAct = graph->pathHelper(firstAct, secondActor);
-		Movie* prevMov;
-		if(firstAct->prev){
-			prevMov = firstAct->prev;
+	for(unsigned int i = 0; i < listCollabs.size(); i++){
+		if(i == 4){
+			break;
 		}
-		out << "(" << firstActor << ")" ;
-		while(firstAct->actName != firstActor && firstAct->prev){
-			total = "--["+prevMov->movTit+"#@"+ to_string(prevMov->year) +"]-->("+firstAct->actName+")" + total;
-			firstAct = prevMov->prev;
-			if(firstAct->prev){
-				prevMov = firstAct->prev;
-			}
-		}
-		out << total << endl;
+		collab << listCollabs[i]->actName << '\t';
 	}
+	collab << endl;
 	//Resets the graph for the next set of actor
 	unordered_map<string, Actor*>::iterator reset = ((graph->getactMap()).begin());
-	actEnd = ((graph->getactMap()).end());
 	for(auto reset: (graph->getactMap())){
 		((reset).second)->dist = INT_MAX;
 		((reset).second)->prev = 0;
@@ -82,7 +72,8 @@ void unweightedPath(string inFile, string outFile, ActorGraph* graph){
    }
       
    in.close();
-   out.close();
+   collab.close();
+   uncollab.close();
 }
 int main(int argc, char* arg[]){
 
@@ -92,12 +83,10 @@ int main(int argc, char* arg[]){
   }
 
   ActorGraph* graph = new ActorGraph();
-  cout << "Reading " << arg[3] << " ..." << endl; 
-  if(strcmp(arg[2], "u") == 0){
-  	graph->loadFromFile(arg[1], arg[2]);
-	cout << "done" << endl;
-	unweightedPath(arg[3], arg[4], graph);
-  }
+  cout << "Reading " << arg[2] << " ..." << endl; 
+  graph->loadFromFile(arg[1], false);
+  cout << "done" << endl;
+  findLinks(arg[2], arg[3], arg[4], graph);
   delete graph;
   return 0;
 }

@@ -17,8 +17,9 @@ class Actor {
 		vector<Movie*> movies;
 		bool visited;
 		int dist;
+		int triangles;
 		
-	Actor(string actName,  Movie* prev = 0, bool visited = false, int dist = INT_MAX) : actName(actName), prev(prev), visited(visited), dist(dist) {
+	Actor(string actName,  Movie* prev = 0, bool visited = false, int dist = INT_MAX, int triangles = 0) : actName(actName), prev(prev), visited(visited), dist(dist), triangles(triangles) {
 	}
 };
 

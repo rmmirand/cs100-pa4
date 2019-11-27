@@ -25,6 +25,14 @@ struct valComp{
 		return a1->dist > a2->dist;
 	}
 };
+struct triangleComp{
+	bool operator()(Actor* a1, Actor* a2) const{
+		if(a1->triangles == a2->triangles){
+			return a1->actName > a2->actName;
+		}
+		return a1->triangles > a2->triangles;
+	}
+};
 class ActorGraph {
   protected:
     // Maybe add class data structure(s) here
@@ -49,6 +57,7 @@ class ActorGraph {
      *
      * return true if file was loaded sucessfully, false otherwise
      */
+    vector<Actor*> linkCollab(Actor* actor);
     bool loadFromFile(const char* in_filename, bool use_weighted_edges);
     unordered_map<string, Actor*> getactMap() { return actMap;}; 
     unordered_map<string, Movie*> getmovMap() { return movMap;};

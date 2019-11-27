@@ -18,6 +18,7 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
+#include <algorithm>
 
 using namespace std;
 
@@ -171,6 +172,35 @@ Actor* ActorGraph::pathHelper(Actor* currA, string target){
 	currA = (*(actMap.find(target))).second;
 	return currA;
 
+}
+vector<Actor*> ActorGraph::linkCollab(Actor* actor){
+	triangleComp tricomp;
+	vector<Actor*> collabs; 
+	//initializes vector of directly linked actors to query actor 
+	for(unsigned int i = 0; i < actor->movies.size(); i++){
+		for(unsigned int j = 0; j < actor->movies[i]->actList.size(); j++){
+			if(actor->actName != actor->movies[i]->actList[j]->actName){
+				if(!actor->movies[i]->actList[j]->visited){
+					actor->movies[i]->actList[j]->visited = true;
+					collabs.push_back(actor->movies[i]->actList[j]);
+				}
+			}
+		}
+	}
+	//begins counter for links
+	for(unsigned int i = 0; i < collabs.size(); i++){
+		for(unsigned int j = 0; j < collabs[i]->movies.size() ; j++){
+			for(unsigned int k = 0; k < collabs[i]->movies[j]->actList.size(); k++){
+				for(unsigned int l = 0; l < collabs.size(); l++){
+					if(collabs[l]->actName != collabs[i]->actName){
+						collabs[i]->triangles = collabs[i]->triangles + 1;;
+					}
+				}
+			}
+		}
+	}
+	sort(collabs.begin(), collabs.end(), tricomp);
+	return collabs;
 }
 ActorGraph::~ActorGraph(){
 	actMap.erase(actMap.begin(), actMap.end());
