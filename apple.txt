@@ -1,8 +1,3 @@
 Actor1,Actor2,Actor3,Actor4
-Katherine Waterston	Samuel L. Jackson
-Katherine Waterston	Robert Downey Jr.
-Samuel L. Jackson	Tom Holland
-Michael Fassbender	Kevin Bacon	Tom Holland
-James McAvoy	Katherine Waterston
-Samuel L. Jackson	Michael Fassbender
-James McAvoy	Robert Downey Jr.	Kevin Bacon
+Christian Slater	Elya Baskin	Brad Renfro	Calista Flockhart
+Bill Skarsgard	Sophia Lillis	Jessica Chastain	Kevin Kline

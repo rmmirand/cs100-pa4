@@ -72,8 +72,6 @@ void findLinks(string inFile, string out1File, string out2File, ActorGraph* grap
 	listUnColl = graph->linkUncollab(theActor);
 	if(listUnColl.size() > 0){
 		uncollab << listUnColl[0]->actName;
-	}else{
-		uncollab << endl;
 	}
 	for(unsigned int i = 1; i < listUnColl.size(); i++){
 		if(i == 4){

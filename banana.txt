@@ -1,8 +1,3 @@
 Actor1,Actor2,Actor3,Actor4
-James McAvoy	Michael Fassbender
-Michael Fassbender	Kevin Bacon	Samuel L. Jackson
-James McAvoy	Kevin Bacon	Katherine Waterston
-James McAvoy	Robert Downey Jr.
-Samuel L. Jackson	Tom Holland
-Robert Downey Jr.	Katherine Waterston
-Tom Holland	Michael Fassbender
+DeForest Kelley	Helmut Qualtinger	Hope Davis	Kevin Kline
+Finn Wolfhard	Kenneth Branagh	Meryl Streep	Alessandro Nivola
