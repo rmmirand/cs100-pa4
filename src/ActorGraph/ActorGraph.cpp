@@ -194,7 +194,7 @@ vector<Actor*> ActorGraph::linkCollab(Actor* actor){
 				if(collabs[i]->movies[j]->actList[k]->actName != actor->actName){
 					for(unsigned int l = 0; l < collabs.size(); l++){
 						if(collabs[l]->actName != collabs[i]->actName && collabs[i]->movies[j]->actList[k]->actName  == collabs[l]->actName){
-							collabs[i]->triangles = collabs[i]->triangles + 1;;
+							collabs[i]->triangles = collabs[i]->triangles + 1;
 						}
 					}
 				}
@@ -203,6 +203,74 @@ vector<Actor*> ActorGraph::linkCollab(Actor* actor){
 	}
 	sort(collabs.begin(), collabs.end(), tricomp);
 	return collabs;
+}
+vector<Actor*> ActorGraph::linkUncollab(Actor* actor){
+	triangleComp tricomp;
+	vector<Actor*> uncollabs;
+	vector<Actor*> undesirables;
+	bool here = false;
+
+	for(unsigned int i = 0; i < actor->movies.size(); i++){
+		for(unsigned int j = 0; j < actor->movies[i]->actList.size(); j++){
+			if(actor->actName != actor->movies[i]->actList[j]->actName){
+				if(!actor->movies[i]->actList[j]->visited){
+					actor->movies[i]->actList[j]->visited = true;
+					undesirables.push_back(actor->movies[i]->actList[j]);
+				}
+			}
+		}
+	}
+	for(unsigned int i = 0; i < undesirables.size(); i++){
+		for(unsigned int j = 0; j < undesirables[i]->movies.size() ; j++){
+			for(unsigned int k = 0; k < undesirables[i]->movies[j]->actList.size(); k++){
+				if(undesirables[i]->movies[j]->actList[k]->actName == actor->actName){
+					undesirables[i]->triangles = undesirables[i]->triangles + 1;
+				}else{
+					if(undesirables[i]->movies[j]->actList[k]->actName != undesirables[i]->actName){
+						for(unsigned int m =0; m < undesirables.size(); m++){
+							if(undesirables[m]->actName == undesirables[i]->movies[j]->actList[k]->actName){
+								here = true;
+							}
+						}
+						if(!here){
+							here = false;
+							for(unsigned int n =0; n < uncollabs.size(); n++){
+								if(uncollabs[n]->actName == undesirables[i]->movies[j]->actList[k]->actName){
+									here = true;
+								}
+							}
+							if(!here){
+								uncollabs.push_back(undesirables[i]->movies[j]->actList[k]);
+							}
+						}
+						here = false;
+					}
+				}
+			}
+		}
+	}
+	for(unsigned int i = 0; i < uncollabs.size(); i++){
+		for(unsigned int j =0; j < uncollabs[i]->movies.size(); j++){
+			for(unsigned int k =0; k < uncollabs[i]->movies[j]->actList.size(); k++){
+				for(unsigned int m = 0; m < undesirables.size() ; m++){
+					if(uncollabs[i]->movies[j]->actList[k]->actName == undesirables[m]->actName){
+						if(!undesirables[m]->visited){
+							uncollabs[i]->triangles = uncollabs[i]->triangles + undesirables[m]->triangles;
+							undesirables[m]->visited = true;
+						}else{
+							uncollabs[i]->triangles = uncollabs[i]->triangles + 1;
+						}
+						
+					}
+				}
+			}
+		}
+		for(unsigned int n = 0; n < undesirables.size(); n++){
+			undesirables[n]->visited = false;
+		}
+	}
+	sort(uncollabs.begin(), uncollabs.end(), tricomp);
+	return uncollabs;
 }
 ActorGraph::~ActorGraph(){
 	actMap.erase(actMap.begin(), actMap.end());

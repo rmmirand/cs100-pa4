@@ -39,21 +39,28 @@ void findLinks(string inFile, string out1File, string out2File, ActorGraph* grap
    }
 
    collab << "Actor1,Actor2,Actor3,Actor4" << endl;
+   uncollab << "Actor1,Actor2,Actor3,Actor4" << endl;
+
    vector<Actor*> listCollabs;
+   vector<Actor*> listUnColl;
    string queryAct;
    getline(in, queryAct);
    Actor* theActor;
    while(in.peek() != ifstream::traits_type::eof()){
 	getline(in, queryAct);
-	cout << queryAct;
 	unordered_map<string, Actor*>::const_iterator queryPoint = (graph->getactMap()).find(queryAct);
 	theActor = (*queryPoint).second;
 	cout << "Computing predictions for (" << queryAct << ")" << endl;
 	if(queryPoint == (graph->getactMap()).end()){
 		cout << "Failed to locate node '" << queryAct << "'" << endl;
 		collab << endl;
-        }	
+        }
+
 	listCollabs = graph->linkCollab(theActor);
+	for(unsigned int i = 0; i < listCollabs.size(); i++){
+		listCollabs[i]->visited = false;
+		listCollabs[i]->triangles = 0;
+	}
 	collab << listCollabs[0]->actName;
 	for(unsigned int i = 1; i < listCollabs.size(); i++){
 		if(i == 4){
@@ -62,11 +69,24 @@ void findLinks(string inFile, string out1File, string out2File, ActorGraph* grap
 		collab << '\t' <<  listCollabs[i]->actName;
 	}
 	collab << endl;
-	//Resets the graph for the next set of actor
-	for(unsigned int i = 0; i < listCollabs.size(); i++){
-		listCollabs[i]->visited = false;
-		listCollabs[i]->triangles = 0;
+	listUnColl = graph->linkUncollab(theActor);
+	if(listUnColl.size() > 0){
+		uncollab << listUnColl[0]->actName;
+	}else{
+		uncollab << endl;
 	}
+	for(unsigned int i = 1; i < listUnColl.size(); i++){
+		if(i == 4){
+			break;
+		}
+		uncollab << '\t' <<  listUnColl[i]->actName;
+	}
+	for(unsigned int i = 0; i < listUnColl.size(); i++){
+		listUnColl[i]->visited = false;
+		listUnColl[i]->triangles = 0;
+	}
+	uncollab << endl;
+
    }
       
    in.close();

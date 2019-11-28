@@ -57,6 +57,7 @@ class ActorGraph {
      *
      * return true if file was loaded sucessfully, false otherwise
      */
+    vector<Actor*> linkUncollab(Actor* actor);
     vector<Actor*> linkCollab(Actor* actor);
     bool loadFromFile(const char* in_filename, bool use_weighted_edges);
     unordered_map<string, Actor*> getactMap() { return actMap;}; 
