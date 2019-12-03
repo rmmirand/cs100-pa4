@@ -69,21 +69,21 @@ void findLinks(string inFile, string out1File, string out2File, ActorGraph* grap
 		collab << '\t' <<  listCollabs[i]->actName;
 	}
 	collab << endl;
-//	listUnColl = graph->linkUncollab(theActor);
-//	if(listUnColl.size() > 0){
-//		uncollab << listUnColl[0]->actName;
-//	}
-//	for(unsigned int i = 1; i < listUnColl.size(); i++){
-//		if(i == 4){
-//			break;
-//		}
-//		uncollab << '\t' <<  listUnColl[i]->actName;
-//	}
-//	for(unsigned int i = 0; i < listUnColl.size(); i++){
-//		listUnColl[i]->visited = false;
-//		listUnColl[i]->triangles = 0;
-//	}
-//	uncollab << endl;
+	listUnColl = graph->linkUncollab(theActor);
+	if(listUnColl.size() > 0){
+		uncollab << listUnColl[0]->actName;
+	}
+	for(unsigned int i = 1; i < listUnColl.size(); i++){
+		if(i == 4){
+			break;
+		}
+		uncollab << '\t' <<  listUnColl[i]->actName;
+	}
+	for(unsigned int i = 0; i < listUnColl.size(); i++){
+		listUnColl[i]->visited = false;
+		listUnColl[i]->triangles = 0;
+	}
+	uncollab << endl;
 
    }
       
