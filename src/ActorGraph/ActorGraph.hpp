@@ -63,6 +63,7 @@ class ActorGraph {
     unordered_map<string, Actor*> getactMap() { return actMap;}; 
     unordered_map<string, Movie*> getmovMap() { return movMap;};
     Actor* pathHelper(Actor* currA, string target);
+    Actor* pathHelperWeight(Actor* currA, string target);
     ~ActorGraph();
 };
 

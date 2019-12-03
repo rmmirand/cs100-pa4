@@ -16,8 +16,11 @@ class Movie {
 		string movTit;
 		Actor* prev;
 		int year;
+		int weight;
 		vector<Actor*> actList;
-	Movie(string movTit,int year, Actor* prev = 0) : movTit(movTit), year(year), prev(prev) {}
+	Movie(string movTit,int year, Actor* prev = 0) : movTit(movTit), year(year), prev(prev) {
+		weight = 1 + (2019 - year);
+	}
 
 };
 #endif //MOVIE_HPP

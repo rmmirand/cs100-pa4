@@ -173,6 +173,41 @@ Actor* ActorGraph::pathHelper(Actor* currA, string target){
 	return currA;
 
 }
+Actor* ActorGraph::pathHelperWeight(Actor* currA, string target){
+	Movie* currM;
+	int weight = 0;
+	int tempd = 0;
+	priority_queue<Actor*, vector<Actor*>, valComp> pq;
+	currA->dist = 0;
+	pq.push(currA);
+	while(!pq.empty()){
+		currA = pq.top();
+		pq.pop();
+		if(!currA->visited){
+			currA->visited = true;
+			for(unsigned int i = 0; i < currA->movies.size(); i++){
+				currM = currA->movies[i];
+				for(unsigned int j = 0; j < currM->actList.size(); j++){
+					if(!currM->actList[j]->visited){
+						weight = (1+(2019 - currM->year));
+						tempd = currA->dist + weight;
+						if(tempd < currM->actList[j]->dist){
+							currM->actList[j]->prev = currM;
+							currM->actList[j]->dist = tempd;
+							pq.push(currM->actList[j]);
+							if(currA->prev != currM){
+								currM->prev = currA;
+							}
+						}
+					}			
+				}
+			}
+		}
+	}
+	currA = (*(actMap.find(target))).second;
+	return currA;
+}
+
 vector<Actor*> ActorGraph::linkCollab(Actor* actor){
 	triangleComp tricomp;
 	vector<Actor*> collabs; 
@@ -194,11 +229,17 @@ vector<Actor*> ActorGraph::linkCollab(Actor* actor){
 				if(collabs[i]->movies[j]->actList[k]->actName != actor->actName){
 					for(unsigned int l = 0; l < collabs.size(); l++){
 						if(collabs[l]->actName != collabs[i]->actName && collabs[i]->movies[j]->actList[k]->actName  == collabs[l]->actName){
-							collabs[i]->triangles = collabs[i]->triangles + 1;
+							if(!collabs[i]->movies[j]->actList[k]->visited){
+								collabs[i]->movies[j]->actList[k]->visited = true;
+								collabs[i]->triangles = collabs[i]->triangles + 1;
+							}
 						}
 					}
 				}
 			}
+		}
+		for(unsigned int m = 0; m < collabs.size(); m++){
+			collabs[m]->visited = false;
 		}
 	}
 	sort(collabs.begin(), collabs.end(), tricomp);
