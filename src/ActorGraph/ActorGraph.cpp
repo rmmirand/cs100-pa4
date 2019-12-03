@@ -314,6 +314,15 @@ vector<Actor*> ActorGraph::linkUncollab(Actor* actor){
 	return uncollabs;
 }
 ActorGraph::~ActorGraph(){
-	actMap.erase(actMap.begin(), actMap.end());
-	movMap.erase(movMap.begin(), movMap.end());
+//	actMap.erase(actMap.begin(), actMap.end());
+//	movMap.erase(movMap.begin(), movMap.end());
+	unordered_map<string, Actor*>::iterator resetA = ((getactMap()).begin());
+	unordered_map<string, Movie*>::iterator resetM = ((getmovMap()).begin());
+	for(auto resetA: (getactMap())){
+		delete ((resetA).second);
+	}
+	for(auto resetM: (getmovMap())){
+		delete ((resetM).second);
+	}
+
 }
