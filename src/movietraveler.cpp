@@ -18,6 +18,20 @@ int main(int argc, char* arg[]){
   ActorGraph* graph = new ActorGraph();
   cout << "Reading " << arg[1] << " ..." << endl; 
   graph->loadFromFile(arg[1], false);
+  cout << "done" << endl;
+ofstream out;
+
+out.open(arg[2], ios::trunc);
+
+//checks if outfile exists, if not creates one
+if(!out.good()){
+     fstream file(arg[2], ios::out);
+     out.close();
+     out.open(arg[2], ios::trunc);
+}
+out << "(actor)<--[movie#@year]-->(actor)" << endl;
+
+  graph->travelMovies(out);
   delete graph;
   return 0;
 }

@@ -87,18 +87,21 @@ bool ActorGraph::loadFromFile(const char* in_filename, bool use_weighted_edges) 
 
 	if(movNode == movMap.end()){
 		Movie* newMovie = new Movie(movie_title, year);
+		allMovies.push_back(newMovie);
 		theMovie = newMovie;
 		movMap.insert(make_pair(movie_title + to_string(year), newMovie));
 	}else{
 		theMovie = (*movNode).second;
 		if(theMovie->year != year){
 			Movie* newMovie = new Movie(movie_title, year);
+			allMovies.push_back(newMovie);
 			theMovie = newMovie;
 			movMap.insert(make_pair(movie_title + to_string(year), newMovie));
 		}
 	}
 	if(actNode == actMap.end()){
 		Actor* newActor = new Actor(actor);
+		allActors.push_back(newActor);
 		theActor = newActor;
 		actMap.insert(make_pair(actor, newActor));
 	}else{
@@ -313,9 +316,42 @@ vector<Actor*> ActorGraph::linkUncollab(Actor* actor){
 	sort(uncollabs.begin(), uncollabs.end(), tricomp);
 	return uncollabs;
 }
+void ActorGraph::travelMovies(ostream& out){
+	int edges = 0;
+	int vertices = 1;
+	int totWeight = 0;
+
+	weightComp comp;
+	sort(allMovies.begin(), allMovies.end(), comp);
+	
+	for(unsigned int i = 0; i < allMovies.size(); i++){
+		for(unsigned int j = 0; j < allMovies[i]->actList.size(); j++){
+			if(!allMovies[i]->actList[j]->visited){
+				if(j+1 < allMovies[i]->actList.size()){
+					totWeight += allMovies[i]->weight;
+					edges++;
+					vertices++;
+					allMovies[i]->actList[j]->visited = true;
+					//allMovies[i]->actList[j+1]->visited = true;
+					out << allMovies[i]->actList[j]->actName << "<--[" << allMovies[i]->movTit << "#@" << allMovies[i]->year << "]-->" << allMovies[i]->actList[j+1]->actName << endl;
+				}else{
+					if(j-1 >= 0 && !allMovies[i]->actList[j-1]->visited ){
+						totWeight += allMovies[i]->weight;
+						edges++;
+						vertices++;
+						allMovies[i]->actList[j]->visited = true;
+					//	allMovies[i]->actList[j-1]->visited = true;
+						out << allMovies[i]->actList[j]->actName << "<--[" << allMovies[i]->movTit << "#@" << allMovies[i]->year << "]-->" << allMovies[i]->actList[j-1]->actName << endl;
+					}
+				}
+			}
+		}
+	}
+	out << "#NODE CONNECTED: " << vertices << endl;
+        out << "#EDGE CHOSEN: " << edges << endl;
+	out << "TOTAL EDGE WEIGHTS: " << totWeight << endl;	
+}
 ActorGraph::~ActorGraph(){
-//	actMap.erase(actMap.begin(), actMap.end());
-//	movMap.erase(movMap.begin(), movMap.end());
 	unordered_map<string, Actor*>::iterator resetA = ((getactMap()).begin());
 	unordered_map<string, Movie*>::iterator resetM = ((getmovMap()).begin());
 	for(auto resetA: (getactMap())){

@@ -32,7 +32,7 @@ void unweightedPath(string inFile, string outFile, ActorGraph* graph){
 	out.open(outFile, ios::trunc);
    }
 
-   out << "(Actor)--[movie#@year]-->(actor)--..." << endl;
+   out << "(actor)--[movie#@year]-->(actor)--..." << endl;
    string firstActor;
    string secondActor;
    string total;

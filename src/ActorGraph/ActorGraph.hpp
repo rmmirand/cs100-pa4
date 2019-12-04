@@ -33,11 +33,21 @@ struct triangleComp{
 		return a1->triangles > a2->triangles;
 	}
 };
+struct weightComp{
+	bool operator()(Movie* m1, Movie* m2) const{
+		if(m1->weight == m2->weight){
+			return m1->movTit < m2->movTit;
+		}
+		return m1->weight < m2->weight;
+	}
+};
 class ActorGraph {
   protected:
     // Maybe add class data structure(s) here
     unordered_map<string, Actor*> actMap;
     unordered_map<string, Movie*> movMap;
+    vector<Movie*> allMovies;
+    vector<Actor*> allActors;
 
   public:
     /**
@@ -64,6 +74,7 @@ class ActorGraph {
     unordered_map<string, Movie*> getmovMap() { return movMap;};
     Actor* pathHelper(Actor* currA, string target);
     Actor* pathHelperWeight(Actor* currA, string target);
+    void travelMovies(ostream& out); 
     ~ActorGraph();
 };
 
