@@ -9,11 +9,9 @@ using namespace std;
 using namespace testing;
 
 class ActorGraphTest : public ::testing::Test {
-	protected:
-		ActorGraph actors;
+  protected:
+    ActorGraph actors;
 
-	public:
-		ActorGraphTest() {
-		   
-		}
+  public:
+    ActorGraphTest() {}
 };
